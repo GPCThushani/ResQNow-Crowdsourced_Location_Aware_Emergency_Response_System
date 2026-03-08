@@ -45,6 +45,6 @@ exports.updateIncidentStatus = async (req, res) => {
     res.status(200).json(updateIncident);
   }
   catch(err) {
-    res.status(500).json({ messaage: "Error updating status", error: err.message });
+    res.status(500).json({ message: "Error updating status", error: err.message });
   }
 };
