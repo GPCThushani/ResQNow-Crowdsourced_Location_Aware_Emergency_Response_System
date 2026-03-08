@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const incidentController = require('../controllers/incidentControllerjs);
+const incidentController = require('../controllers/incidentControllerjs');
 const authMiddleware = require('../middleware/authMiddleware.js');
 
 router.get('/', incidentController.getAllIncidents);
