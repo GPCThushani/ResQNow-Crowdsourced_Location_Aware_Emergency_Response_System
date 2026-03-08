@@ -5,7 +5,7 @@ const router = express.Router();
 const incidentController = require('../controllers/incidentController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-routher.get('/', incidentController.getAllIncidents);
+router.get('/', incidentController.getAllIncidents);
 router.post('/', authMiddleware, incidentController.updateIncidentStatus);
 
 module.exports = router;
