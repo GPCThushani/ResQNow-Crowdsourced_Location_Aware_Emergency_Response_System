@@ -4,9 +4,16 @@ const IncidentSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   type: { type: String, required: true }, // e.g., Accident, Fire, Flood [cite: 247]
   description: { type: String, required: true },
-  location: {
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true }
+ location: {
+    type: {
+      type: String, 
+      enum: ['Point'], 
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true
+    }
   },
   status: { 
     type: String, 
@@ -15,5 +22,6 @@ const IncidentSchema = new mongoose.Schema({
   },
   timestamp: { type: Date, default: Date.now }
 });
+IncidentSchema.index({ location: '2dsphere' }); //find nearby queries
 
 module.exports = mongoose.model('Incident', IncidentSchema);
