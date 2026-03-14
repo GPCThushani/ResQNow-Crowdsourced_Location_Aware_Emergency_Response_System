@@ -11,7 +11,10 @@ exports.createIncident = async (req, res) => {
       user_id: req.user.id,
       type,
       description,
-      location
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(longitude), parseFloat(latitude)] // Location update
+      }
     });
 
     const savedIncident = await newIncident.save();
