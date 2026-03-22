@@ -5,6 +5,7 @@ const Incident = require('../models/Incident');
 // Create new incident report
 exports.createIncident = async (req, res) => {
   try {
+
     const { type, description, longitude, latitude } = req.body;
 
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
@@ -54,6 +55,12 @@ exports.updateIncidentStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
+    const validStatuses = ['Pending', 'Verified', 'Assigned', 'Resolved'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
     const updatedIncident = await Incident.findByIdAndUpdate(
       req.params.id,
       { status },
@@ -66,7 +73,10 @@ exports.updateIncidentStatus = async (req, res) => {
       });
     }
 
-    res.status(200).json(updatedIncident);
+    res.status(200).json({
+    message: "Status updated successfully",
+    incident: updatedIncident
+  });
 
   } catch (err) {
     res.status(500).json({

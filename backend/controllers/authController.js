@@ -37,26 +37,30 @@ exports.register = async (req, res) => {
 // LOGIN USER
 exports.login = async (req, res) => {
   try {
+    console.log("LOGIN BODY:", req.body);
+
     const { email, password } = req.body;
 
-    // check user
     const user = await User.findOne({ email });
+    console.log("FOUND USER:", user);
+
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    // compare password
+    console.log("HASHED PASSWORD:", user.password);
+
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("PASSWORD MATCH:", isMatch);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-        // Check JWT secret
     if (!process.env.JWT_SECRET) {
       return res.status(500).json({ message: "JWT_SECRET not configured" });
     }
 
-    // create JWT token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -70,6 +74,7 @@ exports.login = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("LOGIN ERROR:", error); // 👈 VERY IMPORTANT
     res.status(500).json({ message: error.message });
   }
 };
