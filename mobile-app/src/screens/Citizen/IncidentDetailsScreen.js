@@ -95,6 +95,7 @@ const IncidentDetailsScreen = () => {
           <Text className="text-[#8D99AE] text-sm leading-[22px]">{incident.description}</Text>
         </View>
 
+        {/* Community Verification Box */}
         <View className="bg-[#F7F7F7] px-5 py-6">
           <View className="bg-white rounded-3xl p-5 shadow-sm">
             <View className="flex-row justify-between items-center mb-5">
@@ -109,20 +110,42 @@ const IncidentDetailsScreen = () => {
               </View>
             </View>
 
-            <View className="flex-col gap-3">
-              {[...(incident.verified_by || []).map(id => ({id, type: 'v'})), ...(incident.reported_inaccurate_by || []).map(id => ({id, type: 'i'}))]
-                .slice(0, 3).map((item, index) => (
-                <View key={index} className="flex-row items-center justify-between bg-[#F7F7F7] py-2 px-3 rounded-2xl">
-                  <View className="flex-row items-center gap-3">
-                    <View className={`w-10 h-10 rounded-full items-center justify-center ${item.type === 'v' ? 'bg-[#2ECC71]' : 'bg-[#D62828]'}`}>
-                       <Text className="text-white font-bold text-xs">U{index+1}</Text>
-                    </View>
-                    <Text className="font-bold text-[#2B2D42] text-xs">Citizen {item.id.toString().slice(-4)}</Text>
-                  </View>
-                  <Ionicons name={item.type === 'v' ? "checkmark-circle" : "close-circle"} size={22} color={item.type === 'v' ? "#2ECC71" : "#D62828"} />
+            {(() => {
+              const verifications = (incident.verified_by || []).map(id => ({ id, type: 'verify' }));
+              const inaccuracies = (incident.reported_inaccurate_by || []).map(id => ({ id, type: 'inaccurate' }));
+              const allFeedbacks = [...verifications, ...inaccuracies];
+
+              if (allFeedbacks.length === 0) {
+                return <Text className="text-[#8D99AE] text-center text-sm py-2">No feedbacks yet.</Text>;
+              }
+
+              return (
+                <View className="flex-col gap-3">
+                  {allFeedbacks.map((f, index) => {
+                    const uid = String(f.id);
+                    const isVerify = f.type === 'verify';
+                    return (
+                      <View key={uid + index} className="flex-row items-center justify-between bg-[#F7F7F7] py-2 px-3 rounded-2xl border border-[#F0F0F0]">
+                        <View className="flex-row items-center gap-3">
+                          <View className={`w-10 h-10 rounded-full ${isVerify ? 'bg-[#2ECC71]' : 'bg-[#D62828]'} items-center justify-center`}>
+                            <Text className="text-white font-bold">{uid.slice(-2).toUpperCase()}</Text>
+                          </View>
+                          <View>
+                            <Text className="font-bold text-[#2B2D42] text-[13px]">Citizen {uid.slice(-4)}</Text>
+                            <Text className="text-[#8D99AE] mt-0.5 text-[11px]">{isVerify ? 'Verified' : 'Reported Inaccurate'}</Text>
+                          </View>
+                        </View>
+                        <Ionicons 
+                          name={isVerify ? "checkmark-circle-outline" : "close-circle-outline"} 
+                          size={24} 
+                          color={isVerify ? "#2ECC71" : "#D62828"} 
+                        />
+                      </View>
+                    );
+                  })}
                 </View>
-              ))}
-            </View>
+              );
+            })()}
           </View>
         </View>
       </ScrollView>
