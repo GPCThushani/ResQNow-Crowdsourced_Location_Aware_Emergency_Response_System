@@ -52,7 +52,7 @@ const HomeScreen = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
-        <ActivityIndicator size="large" color="#D32F2F" />
+        <ActivityIndicator size="large" color="#D62828" />
       </View>
     );
   }
